@@ -21,6 +21,16 @@ body {
     font-size: larger;
 }
 
+h1 {
+    border: 2px solid black;
+    border-radius: 15px;
+    box-shadow: 15px 15px rgb(56, 56, 56);
+    padding: 10px 25px;
+    margin-top: 50px;
+    font-size: 48px;
+    background-color: rgb(207, 183, 105);
+}
+
 .main {
     display: flex;
     align-items: center;
@@ -32,8 +42,8 @@ body {
 
 .container {
     width: 384px;
-    height: 582px;
-    background-color: aliceblue;
+    /* height: 593px; */
+    background-color: rgb(107, 83, 52);
     display: flex;
     flex-wrap: wrap;
     align-content: flex-start;
@@ -41,6 +51,7 @@ body {
     padding: 8px;
     box-sizing: content-box;
     border-radius: 10px;
+    box-shadow: 15px 15px rgb(56, 56, 56);
 }
 
 button {
@@ -48,21 +59,24 @@ button {
     width: 96px;
     font-size: 32px;
     border-radius: 5px;
+    box-shadow: 2px 2px rgb(56, 56, 56);
 }
 
 .screen {
-    height: 96px;
+    height: 107px;
     width: 384px;
     border: 1px solid black ;
     border-radius: 5px;
-    background-color: lightgrey;
-    font-size: 90px;
+    background-color: rgb(78, 77, 77);
+    color: white;
+    font-size: 72px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
     padding-right: 5px;
-    margin-bottom: 6px;
+    margin-bottom: 16px;
+    box-shadow: 2px 2px rgb(56, 56, 56);
 
 }
 
@@ -77,6 +91,12 @@ button {
     flex-direction: column;
 }
 
+.operators button {
+    background-color: rgb(255, 136, 0);
+}
+
+
+
 .numbers {
     display: flex;
     flex-direction: row-reverse;
@@ -85,7 +105,14 @@ button {
     flex-wrap: wrap;
 }
 
-.cancel,
-.zero {
+#cancel,
+#percent,
+#plusmn
+ {
+    background-color: rgb(207, 183, 105);
+}
+
+/* select the 0 button only      */
+#\30 {  
     width: 192px;
 }
