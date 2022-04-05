@@ -8,6 +8,9 @@ const divide = (a, b) => a / b;
 
 var operator = 'add';
 var screenValue = '';
+var dontWipeScreen = true; // keeps the number on screen after an operator is selected
+var a = 0;
+var b = 0;
 
 function operate(op, a, b) {
     if (op === 'add') {
@@ -28,53 +31,6 @@ function setScreen(value) {
 }
 
 
-
-function replyClick(clickedId) {
-    console.log(clickedId);
-    if (clickedId === 'cancel') {
-        clearScreen();
-        return;
-    } else if (clickedId === 'divide'){
-        operator = clickedId;
-        a = screenValue;
-        clearScreen();
-        return;
-    } else if (clickedId === 'multiply'){
-        operator = clickedId;
-        a = screenValue;
-        clearScreen();
-        return;
-    } else if (clickedId === 'subtract'){
-        operator = clickedId;
-        a = screenValue;
-        clearScreen();
-        return;
-    } else if (clickedId === 'add'){
-        operator = clickedId;
-        a = screenValue;
-        clearScreen();
-        return;
-    } else if (clickedId === 'equals'){
-        b = screenValue;
-        getResult(operator, a, b);
-    } else if (clickedId === '0' 
-            || clickedId === '1' 
-            || clickedId === '2' 
-            || clickedId === '3' 
-            || clickedId === '4' 
-            || clickedId === '5' 
-            || clickedId === '6' 
-            || clickedId === '7' 
-            || clickedId === '8' 
-            || clickedId === '9' 
-            || clickedId === '.' ) {
-        if (screenValue.includes('.') && clickedId === '.') return; 
-        screenValue += clickedId;
-        setScreen(screenValue);
-    }
-
-}
-
 function getResult(operator, a, b) {
         setScreen(operate(operator, a, b));
 }
@@ -87,4 +43,60 @@ function clearScreen() {
 function allClear() {
     screenValue = '';
     clearScreen();
+}
+
+
+// add event listner for all the buttons, call evaluate when they are pressed
+document.querySelectorAll('.btn').forEach(el => el.addEventListener('click', () => evaluate(el.id)));
+
+function evaluate(keyPress) {
+    switch (keyPress) {
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+        case ".":
+            if (screenValue.includes('.') && keyPress === '.') break;
+            if (dontWipeScreen === true) {
+                clearScreen();
+                dontWipeScreen === false;
+            }
+            
+            screenValue += keyPress;
+            setScreen(screenValue);
+            dontWipeScreen = false;
+            break;
+        case "add":
+        case "subtract":
+        case "multiply":
+        case "divide":
+            dontWipeScreen = true;
+            operator = keyPress;
+            a = parseInt(screenValue);
+            // clearScreen();
+            break;
+        case "cancel":
+            clearScreen();
+            break;
+        case "percent":
+            screenValue /= 100;
+            a = parseInt(screenValue);
+            setScreen(screenValue);
+            break;
+        case "plusmn":
+            screenValue *= -1;
+            a = parseInt(screenValue);
+            setScreen(screenValue);
+            break;
+        case "equals":
+            dontWipeScreen = false;
+            b = parseInt(screenValue);
+            getResult(operator, a, b);
+    }
 }
