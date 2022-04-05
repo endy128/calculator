@@ -1,6 +1,6 @@
 const add = (a, b) => parseInt(a) + parseInt(b);
 
-const subtract = (a, b) => a - b;
+const subtract = (a, b) => parseInt(a) - parseInt(b);
 
 const multiply = (a, b) => a * b;
 
@@ -8,9 +8,9 @@ const divide = (a, b) => a / b;
 
 var operator = 'add';
 var screenValue = '';
-var dontWipeScreen = true; // keeps the number on screen after an operator is selected
-var a = 0;
-var b = 0;
+var wipeScreen = false; // keeps the number on screen after an operator is selected
+var a = '';
+var b = '';
 
 function operate(op, a, b) {
     if (op === 'add') {
@@ -31,17 +31,14 @@ function setScreen(value) {
 }
 
 
-function getResult(operator, a, b) {
-        setScreen(operate(operator, a, b));
-}
-
-
 function clearScreen() {
     setScreen('');
 }
 
 function allClear() {
     screenValue = '';
+    a = '';
+    b = '';
     clearScreen();
 }
 
@@ -62,41 +59,53 @@ function evaluate(keyPress) {
         case "8":
         case "9":
         case ".":
-            if (screenValue.includes('.') && keyPress === '.') break;
-            if (dontWipeScreen === true) {
+            if (wipeScreen === true) { // allows the result to stay on screen if operator is pressed instead of equals
+                wipeScreen = false;
                 clearScreen();
-                dontWipeScreen === false;
             }
-            
-            screenValue += keyPress;
-            setScreen(screenValue);
-            dontWipeScreen = false;
+            if (toString(screenValue).includes('.') && keyPress === '.') break;
+                screenValue += keyPress;
+                setScreen(screenValue);
             break;
         case "add":
         case "subtract":
         case "multiply":
         case "divide":
-            dontWipeScreen = true;
             operator = keyPress;
-            a = parseInt(screenValue);
-            // clearScreen();
-            break;
+            if (a === '') {
+                a = screenValue;
+                clearScreen();
+                break;
+            } else {
+                b = screenValue;
+                a = operate(operator, a ,b);
+                setScreen(a);
+                wipeScreen = true;
+                break; 
+            }
         case "cancel":
-            clearScreen();
+            allClear();
             break;
         case "percent":
             screenValue /= 100;
-            a = parseInt(screenValue);
+            a = screenValue;
             setScreen(screenValue);
             break;
         case "plusmn":
             screenValue *= -1;
-            a = parseInt(screenValue);
+            a = screenValue;
             setScreen(screenValue);
             break;
         case "equals":
-            dontWipeScreen = false;
-            b = parseInt(screenValue);
-            getResult(operator, a, b);
+            if (operator === 'divide' && screenValue === '0') {
+                alert("No divide by zero!");
+                allClear();
+                break;
+            }
+            b = screenValue;
+            a = operate(operator, a ,b);
+            setScreen(a);
+            console.log(`a = ${a} & b = ${b}`);
+
     }
 }
