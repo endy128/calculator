@@ -1,16 +1,17 @@
 const add = (a, b) => parseInt(a) + parseInt(b);
 
-const subtract = (a, b) => parseInt(a) - parseInt(b);
+const subtract = (a, b) => a - b;
 
 const multiply = (a, b) => a * b;
 
 const divide = (a, b) => a / b;
 
-var operator = 'add';
-var screenValue = '';
+var operator = '';
+var screenValue = [];
 var wipeScreen = false; // keeps the number on screen after an operator is selected
 var a = '';
 var b = '';
+var result = '';
 
 function operate(op, a, b) {
     if (op === 'add') {
@@ -25,9 +26,9 @@ function operate(op, a, b) {
 };
 
 
-function setScreen(value) {
-    document.querySelector(".screen").innerHTML = value;
-    screenValue = value;
+function setScreen(screenString) {
+    document.querySelector(".screen").innerHTML = screenString;
+    screenValue = screenString.toString().split(''); // update the screenValue after setting the html
 }
 
 
@@ -36,7 +37,7 @@ function clearScreen() {
 }
 
 function allClear() {
-    screenValue = '';
+    screenValue = [];
     a = '';
     b = '';
     clearScreen();
@@ -44,7 +45,7 @@ function allClear() {
 
 
 // add event listner for all the buttons, call evaluate when they are pressed
-document.querySelectorAll('.btn').forEach(el => el.addEventListener('click', () => evaluate(el.id)));
+document.querySelectorAll('.btn').forEach(button => button.addEventListener('click', () => evaluate(button.id)));
 
 function evaluate(keyPress) {
     switch (keyPress) {
@@ -63,49 +64,66 @@ function evaluate(keyPress) {
                 wipeScreen = false;
                 clearScreen();
             }
-            if (toString(screenValue).includes('.') && keyPress === '.') break;
-                screenValue += keyPress;
-                setScreen(screenValue);
+            // check for a decimal and ignore if it's pressed again
+            // or check for max of 8 chars, to not over run the screen
+            if ((screenValue.includes('.') && keyPress ==='.') || screenValue.length > 8 ) break;        
+            // if decimal first, add a zero
+            if (screenValue[0] === undefined && keyPress === '.') screenValue.push('0');
+            // add to end off array
+            screenValue.push(keyPress);
+            console.log(`screenValue:${screenValue}, a=${a}, b=${b}`);
+            // update screen with array
+            setScreen(screenValue.join(''));
             break;
         case "add":
         case "subtract":
         case "multiply":
         case "divide":
+            if (operator != keyPress && wipeScreen === true) {
+                operator = keyPress;
+                break;
+            }
             operator = keyPress;
             if (a === '') {
-                a = screenValue;
+                a = screenValue.join('');
                 clearScreen();
                 break;
             } else {
-                b = screenValue;
-                a = operate(operator, a ,b);
-                setScreen(a);
+                b = screenValue.join('');
+                result = operate(operator, a ,b);
+                setScreen(result);
                 wipeScreen = true;
+                a = result;
                 break; 
             }
         case "cancel":
             allClear();
             break;
         case "percent":
-            screenValue /= 100;
-            a = screenValue;
-            setScreen(screenValue);
+            // divide by 100
+            b = screenValue.join('');
+            b = (b / 100);
+            setScreen(b);
             break;
         case "plusmn":
-            screenValue *= -1;
-            a = screenValue;
-            setScreen(screenValue);
+            // multiply the screen value by -1
+            b = screenValue.join('');
+            b = (b * -1);
+            setScreen(b);
             break;
         case "equals":
+            // check for divide by zero
             if (operator === 'divide' && screenValue === '0') {
                 alert("No divide by zero!");
                 allClear();
                 break;
             }
-            b = screenValue;
+            b = screenValue.join('');
             a = operate(operator, a ,b);
             setScreen(a);
-            console.log(`a = ${a} & b = ${b}`);
+            wipeScreen = true;
+            console.log(`a=${a}, b=${b}`);
 
+            
     }
 }
