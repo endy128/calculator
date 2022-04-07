@@ -12,6 +12,7 @@ var wipeScreen = false; // keeps the number on screen after an operator is selec
 var a = '';
 var b = '';
 var result = '';
+var lastKeyPress = '';
 
 function operate(op, a, b) {
     if (op === 'add') {
@@ -27,6 +28,10 @@ function operate(op, a, b) {
 
 
 function setScreen(screenString) {
+    if (screenString.toString().length > 9) {
+    screenString = parseInt(screenString).toPrecision(8);
+    console.log(typeof screenString);
+    }
     document.querySelector(".screen").innerHTML = screenString;
     screenValue = screenString.toString().split(''); // update the screenValue after setting the html
 }
@@ -71,7 +76,7 @@ function evaluate(keyPress) {
             if (screenValue[0] === undefined && keyPress === '.') screenValue.push('0');
             // add to end off array
             screenValue.push(keyPress);
-            console.log(`screenValue:${screenValue}, a=${a}, b=${b}`);
+            // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
             // update screen with array
             setScreen(screenValue.join(''));
             break;
@@ -79,7 +84,8 @@ function evaluate(keyPress) {
         case "subtract":
         case "multiply":
         case "divide":
-            if (operator != keyPress && wipeScreen === true) {
+            // console.log(`LastKey: ${lastKeyPress}, ThisKey: ${keyPress}`);
+            if (operator != keyPress && wipeScreen === true) { // if equals has been pressed last, accept the operator button then break
                 operator = keyPress;
                 break;
             }
@@ -87,29 +93,34 @@ function evaluate(keyPress) {
             if (a === '') {
                 a = screenValue.join('');
                 clearScreen();
+                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
                 break;
+            }
+            if (lastKeyPress === keyPress) { // check if repeatedly pressing an operator button
+                result = operate(operator, a ,b);
+                setScreen(result);
+                wipeScreen = true;
+                a = result;
+                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
             } else {
                 b = screenValue.join('');
                 result = operate(operator, a ,b);
                 setScreen(result);
                 wipeScreen = true;
                 a = result;
-                break; 
+                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);               
             }
-        case "cancel":
+            break; 
+            case "cancel":
             allClear();
             break;
         case "percent":
             // divide by 100
-            b = screenValue.join('');
-            b = (b / 100);
-            setScreen(b);
+            setScreen((screenValue.join('')) / 100);
             break;
         case "plusmn":
             // multiply the screen value by -1
-            b = screenValue.join('');
-            b = (b * -1);
-            setScreen(b);
+            setScreen((screenValue.join('')) * -1);
             break;
         case "equals":
             // check for divide by zero
@@ -118,12 +129,18 @@ function evaluate(keyPress) {
                 allClear();
                 break;
             }
-            b = screenValue.join('');
-            a = operate(operator, a ,b);
-            setScreen(a);
-            wipeScreen = true;
-            console.log(`a=${a}, b=${b}`);
-
-            
+            if (lastKeyPress === 'equals' && keyPress === 'equals') {
+                a = operate(operator, a ,b);
+                setScreen(a);
+                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`); 
+            } else {
+                b = screenValue.join('');
+                a = operate(operator, a ,b);
+                setScreen(a);
+                wipeScreen = true;
+                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
+            } 
+            break;      
     }
+lastKeyPress = keyPress; // alows to check next time if repeated operator or equals key is pressed so we don't update b
 }
