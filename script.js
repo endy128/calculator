@@ -27,13 +27,16 @@ function operate(op, a, b) {
 };
 
 
-function setScreen(screenString) {
-    if (screenString.toString().length > 9) {
-    screenString = parseInt(screenString).toPrecision(8);
-    console.log(typeof screenString);
+
+function setScreen(result) {
+    if (result.toString().length > 9) { 
+        result = "Error";
     }
-    document.querySelector(".screen").innerHTML = screenString;
-    screenValue = screenString.toString().split(''); // update the screenValue after setting the html
+    document.querySelector(".screen").innerHTML = result;
+    console.log(`${typeof result}, result: ${result}`);
+    screenValue = result.toString().split('');
+    console.log(`Decimal ${screenValue}`);
+
 }
 
 
@@ -71,7 +74,7 @@ function evaluate(keyPress) {
             }
             // check for a decimal and ignore if it's pressed again
             // or check for max of 8 chars, to not over run the screen
-            if ((screenValue.includes('.') && keyPress ==='.') || screenValue.length > 8 ) break;        
+            if ((screenValue.includes('.') && keyPress === '.') || screenValue.length > 8 ) break;        
             // if decimal first, add a zero
             if (screenValue[0] === undefined && keyPress === '.') screenValue.push('0');
             // add to end off array
@@ -96,32 +99,27 @@ function evaluate(keyPress) {
                 // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
                 break;
             }
-            if (lastKeyPress === keyPress) { // check if repeatedly pressing an operator button
-                result = operate(operator, a ,b);
-                setScreen(result);
-                wipeScreen = true;
-                a = result;
-                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
-            } else {
-                b = screenValue.join('');
-                result = operate(operator, a ,b);
-                setScreen(result);
-                wipeScreen = true;
-                a = result;
-                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);               
-            }
+            if (lastKeyPress != keyPress) b = screenValue.join(''); // check if repeatedly pressing an operator button
+            result = operate(operator, a ,b);
+            setScreen(result);
+            wipeScreen = true;
+            a = result;
             break; 
-            case "cancel":
+
+        case "cancel":
             allClear();
             break;
+
         case "percent":
             // divide by 100
             setScreen((screenValue.join('')) / 100);
             break;
+
         case "plusmn":
             // multiply the screen value by -1
             setScreen((screenValue.join('')) * -1);
             break;
+
         case "equals":
             // check for divide by zero
             if (operator === 'divide' && screenValue === '0') {
