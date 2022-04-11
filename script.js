@@ -14,6 +14,7 @@ var b = '';
 var result = '';
 var lastKeyPress = '';
 
+
 function operate(op, a, b) {
     if (op === 'add') {
         return add(a, b);
@@ -33,9 +34,7 @@ function setScreen(result) {
         result = "Error";
     }
     document.querySelector(".screen").innerHTML = result;
-    console.log(`${typeof result}, result: ${result}`);
     screenValue = result.toString().split('');
-    console.log(`Decimal ${screenValue}`);
 
 }
 
@@ -82,30 +81,32 @@ function evaluate(keyPress) {
             // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
             // update screen with array
             setScreen(screenValue.join(''));
+            keyPress = "number";
             break;
         case "add":
         case "subtract":
         case "multiply":
         case "divide":
-            // console.log(`LastKey: ${lastKeyPress}, ThisKey: ${keyPress}`);
-            if (operator != keyPress && wipeScreen === true) { // if equals has been pressed last, accept the operator button then break
+            console.log(`LastKey: ${lastKeyPress}, ThisKey: ${keyPress}`);
+            if (lastKeyPress === 'equals') { // if equals has been pressed last, accept the operator button then break
                 operator = keyPress;
                 break;
             }
-            operator = keyPress;
-            if (a === '') {
+
+            if (a === '') { // if 1st round, put the screen value into 'a' otherwise put it into 'b'
                 a = screenValue.join('');
-                clearScreen();
-                // console.log(`screenValue: ${screenValue}, a: ${a}, b: ${b}, ${keyPress}: Pressed`);
+                operator = keyPress; // set the operator
+                wipeScreen = true;
+                break;
+            } else {
+                b = screenValue.join('');
+                result = operate(operator, a ,b); 
+                setScreen(result);
+                a = result;
+                operator = keyPress;
+                wipeScreen = true;
                 break;
             }
-            if (lastKeyPress != keyPress) b = screenValue.join(''); // check if repeatedly pressing an operator button
-            result = operate(operator, a ,b);
-            setScreen(result);
-            wipeScreen = true;
-            a = result;
-            break; 
-
         case "cancel":
             allClear();
             break;
