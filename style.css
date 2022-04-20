@@ -112,7 +112,8 @@ button {
     background-color: rgb(207, 183, 105);
 }
 
-/* select the 0 button only      */
-#\30 {  
+/* select the 0 button & cancel button to enlarge      */
+#\30,
+#cancel {  
     width: 192px;
 }

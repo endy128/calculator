@@ -88,7 +88,9 @@ function evaluate(keyPress) {
         case "multiply":
         case "divide":
             console.log(`LastKey: ${lastKeyPress}, ThisKey: ${keyPress}`);
-            if (lastKeyPress === 'equals') { // if equals has been pressed last, accept the operator button then break
+            
+            // if equals has been pressed last, accept the operator button then break
+            if (lastKeyPress === 'equals') { 
                 operator = keyPress;
                 break;
             }
@@ -116,10 +118,10 @@ function evaluate(keyPress) {
             setScreen((screenValue.join('')) / 100);
             break;
 
-        case "plusmn":
-            // multiply the screen value by -1
-            setScreen((screenValue.join('')) * -1);
-            break;
+        // case "plusmn":
+        //     // multiply the screen value by -1
+        //     setScreen((screenValue.join('')) * -1);
+        //     break;
 
         case "equals":
             // check for divide by zero
