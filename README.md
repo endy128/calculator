@@ -1,6 +1,7 @@
 # calculator
 Web page calculator using javascript
 
-# TO DO
+# To do
 Impliment decimal point
+Fix +/- button
 
