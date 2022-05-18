@@ -1,7 +1,6 @@
 # Calculator
 Web page calculator using javascript
 
-# To do
-Impliment decimal point
+https://endy128.github.io/calculator/
 
 
